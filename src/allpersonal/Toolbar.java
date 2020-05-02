@@ -26,7 +26,7 @@ public class Toolbar extends JPanel implements ActionListener{
 	private EntryListener entryListener;
 	
 	public Toolbar(){
-		/*
+	
 		System.out.println("Tool bar instantiated");
 		cancleButton = new JButton("Cancle"); // Cancel Button.
 		saveButton = new JButton("Save"); // Save Button.
@@ -42,7 +42,7 @@ public class Toolbar extends JPanel implements ActionListener{
 		// Adding components to panel
 		//add(cancleButton);
 		//add(saveButton);
-		add(loginButton);*/
+		add(loginButton);
 		
 	
 	}

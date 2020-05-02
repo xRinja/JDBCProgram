@@ -40,6 +40,7 @@ public class TextPanel extends JPanel implements ActionListener{
 				if(xcounter < 4){
 					if(columnNames[i].equals("Driver")){
 						columnName = new JLabel(columnNames[i]);
+						columnName.setVerticalAlignment(JLabel.CENTER);
 						brid.fill = GridBagConstraints.HORIZONTAL;
 						brid.gridx = xcounter;
 						brid.gridy = ycounter;
@@ -58,6 +59,7 @@ public class TextPanel extends JPanel implements ActionListener{
 						add(serverList, brid);
 					} else {
 					columnName = new JLabel(columnNames[i]);
+					columnName.setVerticalAlignment(JLabel.CENTER);
 					brid.fill = GridBagConstraints.HORIZONTAL;
 					brid.gridx = xcounter;
 					brid.gridy = ycounter;
@@ -74,6 +76,7 @@ public class TextPanel extends JPanel implements ActionListener{
 					xcounter = 0;
 					ycounter++;
 					columnName = new JLabel(columnNames[i]);
+					columnName.setVerticalAlignment(JLabel.CENTER);
 					brid.fill = GridBagConstraints.HORIZONTAL;
 					brid.gridx = xcounter;
 					brid.gridy = ycounter;

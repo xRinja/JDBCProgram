@@ -21,7 +21,7 @@ public class TableSelectState extends JPanel implements GUIState, ActionListener
 	}
 	
 	@Override
-	public void Action(Context context, String[] menu) {
+	public void Action(Context context, Server server) {
 		System.out.println(menu.length);
 		selectionButton = new JButton[menu.length];
 		int xcounter = 0;
@@ -61,12 +61,6 @@ public class TableSelectState extends JPanel implements GUIState, ActionListener
 	}
 
 	@Override
-	public void Debug(String debug) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		JButton clicked = (JButton)e.getSource();
 		System.out.println("Games button pressed");
@@ -74,7 +68,6 @@ public class TableSelectState extends JPanel implements GUIState, ActionListener
 			if(clicked == selectionButton[i]) {
 				System.out.println("Yelp");
 				if(guiState != null){
-					guiState.Debug("Clicked on: " + selectionButton[i].getText());
 					setGUIState(guiState);
 					guiState.Action(this.context, null);
 					setGUIState(guiState);

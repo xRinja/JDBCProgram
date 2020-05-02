@@ -19,7 +19,7 @@ public class addState extends JPanel implements GUIState, ActionListener{
 	}
 	
 	@Override
-	public void Action(Context context, String[] strings) {
+	public void Action(Context context, Server server) {
 		System.out.println("Tool bar instantiated");
 		cancleButton = new JButton("Cancle"); // Cancel Button.
 		saveButton = new JButton("Save"); // Save Button.
@@ -38,18 +38,11 @@ public class addState extends JPanel implements GUIState, ActionListener{
 	}
 
 	@Override
-	public void Debug(String debug) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		JButton clicked = (JButton)e.getSource();
 		
 		if(clicked == saveButton) {
 			if(guiState != null){
-				guiState.Debug("Saved entry");
 				setGUIState(guiState);
 				guiState.Action(this.context, null);;
 				setGUIState(guiState);
@@ -57,7 +50,6 @@ public class addState extends JPanel implements GUIState, ActionListener{
 		} 
 		if(clicked == cancleButton) {
 			if(guiState != null){
-				guiState.Debug("Saved entry");
 				setGUIState(guiState);
 			}
 		} 

@@ -109,15 +109,33 @@ public class Server {
 		this.entryListener = entryListener;
 	}
 	
-	public void logConnectionDetails(JTextField[] jTextFields){
+	public void logConnectionDetails(String[] jTextFields){
 		if(jTextFields != null){
-			this.mySQLURL = jTextFields[0].getText();
-			this.getIP = jTextFields[1].getText();
-			this.port = jTextFields[2].getText();
-			this.getSchema = jTextFields[3].getText();
-			this.userName = jTextFields[4].getText();
-			this.password = jTextFields[5].getText();
-			System.out.println("details logged");
+			System.out.println("server loging details");
+			try {
+				// Connecting
+				Connection connection = DriverManager.getConnection(jTextFields[0] + jTextFields[1] + ":" + jTextFields[2] + "/" + jTextFields[3], 
+						jTextFields[4], jTextFields[5]);
+				System.out.println("Connection Succeeded");
+				DatabaseMetaData meta = connection.getMetaData();
+				ResultSet schemas = meta.getCatalogs();
+				//System.out.println(schemas.getString("TABLE_CAT"));
+				String tempString = "";
+				while(schemas.next()) {
+					tempString += schemas.getString("TABLE_CAT") + " ";
+				}
+				// Logins variables
+				this.mySQLURL = jTextFields[0];
+				this.getIP = jTextFields[1];
+				this.port = jTextFields[2];
+				this.getSchema = jTextFields[3];
+				this.userName = jTextFields[4];
+				this.password = jTextFields[5];
+				this.schemaNames = tempString.split(" ");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }

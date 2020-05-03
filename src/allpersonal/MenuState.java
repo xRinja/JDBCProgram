@@ -26,11 +26,13 @@ public class MenuState extends JFrame implements GUIState, ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JButton clicked = (JButton)e.getSource();
+		String[] tempString = new String[1];
+		tempString[0] = clicked.toString();
 		for(int i = 0; i < selectionButton.length; i++){
 			if(clicked == selectionButton[i]) {
 				if(guiState != null){
 					setGUIState(guiState);
-					guiState.Action(context, null);
+					guiState.Action(context, tempString, null);
 					setGUIState(guiState);
 				}
 			}
@@ -39,10 +41,9 @@ public class MenuState extends JFrame implements GUIState, ActionListener{
 	}
 
 	@Override
-	public void Action(Context context, Server server) {
-		server.setMetaData();
-		SetupButtons(server);
-		SetupTextFields(server);
+	public void Action(Context context, String[] dataSetOne, String[] dataSetTwo) {
+		SetupButtons(dataSetOne);
+		SetupTextFields(dataSetTwo);
 		
 		context.setState(this);
 		this.context = context;
@@ -50,11 +51,11 @@ public class MenuState extends JFrame implements GUIState, ActionListener{
 		
 	}
 	
-	private void SetupButtons(Server server) {
+	private void SetupButtons(String[] dataSetOne) {
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new java.awt.GridBagLayout());
-		System.out.println(server.schemaNames.length);
-		selectionButton = new JButton[server.schemaNames.length];
+		System.out.println(dataSetOne.length);
+		selectionButton = new JButton[dataSetOne.length];
 		int xcounter = 0;
 		int ycounter = 0;
 		
@@ -62,10 +63,10 @@ public class MenuState extends JFrame implements GUIState, ActionListener{
 		GridBagConstraints brid = new GridBagConstraints();
 		brid.insets = new Insets(10,5,35,10);
 		
-		for(int i = 0; i < server.schemaNames.length; i++){
+		for(int i = 0; i < dataSetOne.length; i++){
 			if(xcounter < 2){
-				System.out.println("Made button out of: " + server.schemaNames[i]);
-				selectionButton[i] = new JButton(server.schemaNames[i]);
+				System.out.println("Made button out of: " + dataSetOne[i]);
+				selectionButton[i] = new JButton(dataSetOne[i]);
 				brid.fill = GridBagConstraints.HORIZONTAL;
 				brid.gridx = xcounter;
 				brid.gridy = ycounter;
@@ -75,7 +76,7 @@ public class MenuState extends JFrame implements GUIState, ActionListener{
 			} else {
 				xcounter = 0;
 				ycounter++;
-				selectionButton[i] = new JButton(server.schemaNames[i]);
+				selectionButton[i] = new JButton(dataSetOne[i]);
 				brid.fill = GridBagConstraints.HORIZONTAL;
 				brid.gridx = xcounter;
 				brid.gridy = ycounter;
@@ -86,7 +87,7 @@ public class MenuState extends JFrame implements GUIState, ActionListener{
 		}
 	}
 	
-	private void SetupTextFields(Server server){
+	private void SetupTextFields(String[] dataSetTwo){
 
 	}
 	

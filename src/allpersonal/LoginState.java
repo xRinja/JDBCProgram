@@ -4,10 +4,17 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDate;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class LoginState extends JFrame implements GUIState, ActionListener{
 
@@ -36,9 +43,20 @@ public class LoginState extends JFrame implements GUIState, ActionListener{
 		validate();
 	}
 	
-	private void SetupTextFields(Server server){
-		textPanel = new TextPanel(server.connection, server.databaseTypes);
-		//add(textPanel, BorderLayout.CENTER);
+	private void SetupTextFields(String[] connectionParamters, String[] dataBaseTypes){
+		textPanel = new TextPanel(connectionParamters, dataBaseTypes);
+		try {
+			BufferedReader loadFile = new BufferedReader(new FileReader("LoginSave.txt"));
+			for(int i = 0; i < textPanel.columnTextField.length; i++) {
+				textPanel.columnTextField[i].setText(loadFile.readLine());
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void setGUIState(GUIState guiState) {
@@ -46,9 +64,9 @@ public class LoginState extends JFrame implements GUIState, ActionListener{
 	}
 	
 	@Override
-	public void Action(Context context, Server server) {
+	public void Action(Context context, String[] dataSetOne, String[] dataSetTwo) {
 		SetupButtons();
-		SetupTextFields(server);
+		SetupTextFields(dataSetOne, dataSetTwo);
 
 		context.setState(this);
 		this.context = context;
@@ -60,9 +78,26 @@ public class LoginState extends JFrame implements GUIState, ActionListener{
 		
 		if(clicked == loginButton){
 			if(guiState != null){
+				// TextField into String
+				String[] loginData = new String[textPanel.columnTextField.length];
+				for(int i = 0; i < textPanel.columnTextField.length; i++) {
+				loginData[i] = textPanel.columnTextField[i].getText().toString();
+				System.out.println("Saved data was" + loginData[i]);
+				}
+				
+				// Save Login Info
+				try {
+				FileWriter saveFile = new FileWriter("LoginSave.txt");
+				for(int i = 0; i < textPanel.columnTextField.length; i++) {
+				saveFile.write(textPanel.columnTextField[i].getText().toString() +"\n");
+				}
+				saveFile.close();
+				} catch(Exception e1){
+					
+				}
+				
 				setGUIState(guiState);
-				remove(loginButton);
-				guiState.Action(this.context, null);
+				guiState.Action(this.context, loginData, null);
 				setGUIState(guiState);
 				}
 			}
@@ -74,6 +109,10 @@ public class LoginState extends JFrame implements GUIState, ActionListener{
 	
 	public JPanel getTextField() {
 		return textPanel;
+	}
+	
+	public JTextField[] getJTextColumns() {
+		return textPanel.columnTextField;
 	}
 	
 	public String toString(){

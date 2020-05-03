@@ -57,10 +57,6 @@ public class MainFrame extends JFrame{
 		// First State
 		LoginState();
 
-		// Adding components to frame.
-		//add(loginState.getTextField(), BorderLayout.CENTER); 
-		//add(loginState.getButton(), BorderLayout.SOUTH);
-		
 		// Constructing GUI elements.
 				setSize(1200,800);
 				setVisible(true);		
@@ -69,16 +65,16 @@ public class MainFrame extends JFrame{
 	public void LoginState(){
 		// Switch to loginState
 		setWindowName(" | Login");
-		loginState.Action(context, server);
+		loginState.Action(context, server.connection, server.databaseTypes);
 		add(loginState.getTextField(), BorderLayout.CENTER); 
 		add(loginState.getButton(), BorderLayout.SOUTH);
 		repaint();
 		validate();
-		
 		loginState.setGUIState(new GUIState() {
 		
 			@Override
-			public void Action(Context context, Server server) {
+			public void Action(Context context, String[] dataSetOne, String[] dataSetTwo) {
+				server.logConnectionDetails(dataSetOne);
 				remove(loginState.getTextField());
 				remove(loginState.getButton());
 				MenuState();
@@ -88,7 +84,7 @@ public class MainFrame extends JFrame{
 	// Menu State
 	public void MenuState(){
 		// Switch to Menu State
-		menuState.Action(context, server);
+		menuState.Action(context, server.schemaNames, null);
 		add(menuState.getButton(), BorderLayout.CENTER);
 		repaint();
 		validate();
@@ -96,7 +92,7 @@ public class MainFrame extends JFrame{
 		menuState.setGUIState(new GUIState() {
 			
 			@Override
-			public void Action(Context context, Server server) {
+			public void Action(Context context, String[] dataSetOne, String[] dataSetTwo) {
 				if(context.getState().toString().equalsIgnoreCase("Menu State")){
 				if(loginState != null){
 					remove(menuState);
@@ -121,7 +117,7 @@ public class MainFrame extends JFrame{
 		tableSelectState.setGUIState(new GUIState() {
 
 			@Override
-			public void Action(Context context, Server server) {
+			public void Action(Context context, String[] dataSetOne, String[] dataSetTwo) {
 				if(context.getState().toString().equalsIgnoreCase("Table State")){
 					if(menuState != null){
 						remove(tableSelectState);
@@ -147,7 +143,7 @@ public class MainFrame extends JFrame{
 		add_State.setGUIState(new GUIState() {
 			
 			@Override
-			public void Action(Context context, Server server) {
+			public void Action(Context context, String[] dataSetOne, String[] dataSetTwo) {
 				if(context.getState().toString().equalsIgnoreCase("Add State")){
 					if(tableSelectState!= null){
 						remove(tableSelectState);

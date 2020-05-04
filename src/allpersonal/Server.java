@@ -14,7 +14,8 @@ public class Server {
 	protected String getSchema = "videogamecollection";
 	protected String userName = "root";
 	protected String password = "finger00";
-	protected String[] connection = {"Driver", "IP Address", "Port", "Database", "User Name", "Password"};
+	protected String table = "";
+	protected String[] connection = {"Driver", "IP Address", "Port", "User Name", "Password"};
 	protected String[] databaseTypes = {"", "SQL", "ORACLE", "MICROSOFT", "POSTGRE", "MARIADB"};
 	// Interface
 	protected EntryListener entryListener;
@@ -58,7 +59,23 @@ public class Server {
 	}
 	
 	public void setMetaData(){
-		gettingMetaData = new GettingMetaData(mySQLURL, getIP, port, getSchema, userName, password, "PS4");
+		//gettingMetaData = new GettingMetaData(mySQLURL, getIP, port, getSchema, userName, password, table);
+		Connection connection;
+		try {
+			connection = DriverManager.getConnection(mySQLURL + getIP + ":" + port + "/" + getSchema, userName, password);
+			DatabaseMetaData md = connection.getMetaData();
+			ResultSet rs = md.getTables(connection.getCatalog(), null, "%", new String[] {"TABLE"});
+			int x = 0;
+			String tempString = "";
+			while(rs.next()) {
+				tempString += rs.getString(3) + " ";
+			}
+			tableNames = tempString.split(" ");
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		/*
 		this.rsmd = gettingMetaData.rsmd;
 		this.dbmd = gettingMetaData.dbmd;
 		this.myConnection = gettingMetaData.myConnection;
@@ -68,24 +85,11 @@ public class Server {
 		this.metaDataHash = gettingMetaData.metaDataHash;
 		this.rs = gettingMetaData.rs;
 		this.schemaNames = gettingMetaData.schemaNames;
-		this.tableNames = gettingMetaData.tableNames;
+		this.tableNames = gettingMetaData.tableNames;*/
 		
 		//schemaNames = new String[];
 		//this.schemaNames = gettingMetaData.dbmd.getSchemas().;
 
-			try {
-				rs = dbmd.getSchemas();
-				while(rs.next()){
-					String tableSchema = rs.getString(1);
-					String tableCatalog = rs.getString(2);
-					System.out.println("tableSchema"+tableSchema);
-					System.out.println("The schem is: " + rs.getString("TABLE_SCHEM"));
-					System.out.println("The catalog is: " + rs.getString("TABLE_CATALOG"));
-					} 
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 	}
 	
 	public String[] getColumnNames(){
@@ -114,8 +118,8 @@ public class Server {
 			System.out.println("server loging details");
 			try {
 				// Connecting
-				Connection connection = DriverManager.getConnection(jTextFields[0] + jTextFields[1] + ":" + jTextFields[2] + "/" + jTextFields[3], 
-						jTextFields[4], jTextFields[5]);
+				Connection connection = DriverManager.getConnection(jTextFields[0] + jTextFields[1] + ":" + jTextFields[2] + "/", 
+						jTextFields[3], jTextFields[4]);
 				System.out.println("Connection Succeeded");
 				DatabaseMetaData meta = connection.getMetaData();
 				ResultSet schemas = meta.getCatalogs();
@@ -124,13 +128,14 @@ public class Server {
 				while(schemas.next()) {
 					tempString += schemas.getString("TABLE_CAT") + " ";
 				}
+				connection.close();
 				// Logins variables
 				this.mySQLURL = jTextFields[0];
 				this.getIP = jTextFields[1];
 				this.port = jTextFields[2];
-				this.getSchema = jTextFields[3];
-				this.userName = jTextFields[4];
-				this.password = jTextFields[5];
+				//this.getSchema = jTextFields[3];
+				this.userName = jTextFields[3];
+				this.password = jTextFields[4];
 				this.schemaNames = tempString.split(" ");
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block

@@ -27,7 +27,7 @@ public class MenuState extends JFrame implements GUIState, ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		JButton clicked = (JButton)e.getSource();
 		String[] tempString = new String[1];
-		tempString[0] = clicked.toString();
+		tempString[0] = clicked.getText();
 		for(int i = 0; i < selectionButton.length; i++){
 			if(clicked == selectionButton[i]) {
 				if(guiState != null){

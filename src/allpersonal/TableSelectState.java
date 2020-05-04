@@ -6,14 +6,25 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-public class TableSelectState extends JPanel implements GUIState, ActionListener{
+public class TableSelectState extends JFrame implements GUIState, ActionListener{
 
 	private JButton[] selectionButton;
-	private EntryListener entryListener;
 	private GUIState guiState;
 	private Context context;
+	private JList<String> jList;
+	private JTable jTable;
+	private JPanel tableList;
+	private JPanel tableFill;
+	private JScrollPane jScrollPane;
 	private static final long serialVersionUID = 1L;
 
 	public void setGUIState(GUIState guiState) {
@@ -21,43 +32,48 @@ public class TableSelectState extends JPanel implements GUIState, ActionListener
 	}
 	
 	@Override
-	public void Action(Context context, Server server) {
-		System.out.println(menu.length);
-		selectionButton = new JButton[menu.length];
-		int xcounter = 0;
-		int ycounter = 0;
+	public void Action(Context context, String[] dataSetOne, String[] dataSetTwo) {
+		//JTable table = new JTable();
+		MakeListSelect(dataSetOne);
 		
-		setLayout(new java.awt.GridBagLayout());
-		GridBagConstraints brid = new GridBagConstraints();
-		brid.insets = new Insets(10,5,35,10);
 		
-		for(int i = 0; i < menu.length; i++){
-			if(xcounter < 2){
-				System.out.println("Made button out of: " + menu[i]);
-				selectionButton[i] = new JButton(menu[i]);
-				brid.fill = GridBagConstraints.HORIZONTAL;
-				brid.gridx = xcounter;
-				brid.gridy = ycounter;
-				selectionButton[i].addActionListener(this);
-				add(selectionButton[i], brid);
-				xcounter++;
-			} else {
-				xcounter = 0;
-				ycounter++;
-				
-				selectionButton[i] = new JButton(menu[i]);
-				brid.fill = GridBagConstraints.HORIZONTAL;
-				brid.gridx = xcounter;
-				brid.gridy = ycounter;
-				selectionButton[i].addActionListener(this);
-				add(selectionButton[i], brid);
-				xcounter++;
-			}
-		}
-		validate();
+		// Context
 		context.setState(this);
 		this.context = context;
 		System.out.println(context.getState().toString());
+	}
+	
+	private void MakeListSelect(String[] tables) {
+		jList = new JList<String>(tables);
+		jList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		//jList.setLayoutOrientation(JList.VERTICAL_WRAP);
+		//jList.setSize(250,250);
+		jList.setFixedCellHeight(25);
+		jList.setFixedCellWidth(75);
+		jList.setVisibleRowCount(100);
+		jList.addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				for(int i = 0; i < tables.length; i++) {
+					if(jList.getSelectedValue().equalsIgnoreCase(tables[i])) {
+						System.out.println(tables[i]);
+					}
+				}
+				
+			}
+			
+		});
+		tableList = new JPanel();
+		jScrollPane = new JScrollPane(jList);
+		for(int i = 0; i < tables.length; i++) {
+			System.out.println("Tables are: " + tables[i]);
+		}
+		tableList.add(jScrollPane);
+	}
+	
+	private void MakeTableArea(String[] dataSetOne, String[] dataSetTwo) {
+		jTable = new JTable();
 	}
 
 	@Override
@@ -69,12 +85,16 @@ public class TableSelectState extends JPanel implements GUIState, ActionListener
 				System.out.println("Yelp");
 				if(guiState != null){
 					setGUIState(guiState);
-					guiState.Action(this.context, null);
+					guiState.Action(this.context, null, null);
 					setGUIState(guiState);
 				}
 			}
 		}
 		
+	}
+	
+	public JPanel getTableList() {
+		return tableList;
 	}
 	
 	public String toString(){

@@ -61,11 +61,11 @@ public class MainFrame extends JFrame{
 				setSize(1200,800);
 				setVisible(true);		
 	}
-	// Login State
+	
 	public void LoginState(){
 		// Switch to loginState
 		setWindowName(" | Login");
-		loginState.Action(context, server.connection, server.databaseTypes);
+		loginState.Action(context, null, server.connection, server.databaseTypes);
 		add(loginState.getTextField(), BorderLayout.CENTER); 
 		add(loginState.getButton(), BorderLayout.SOUTH);
 		repaint();
@@ -73,7 +73,7 @@ public class MainFrame extends JFrame{
 		loginState.setGUIState(new GUIState() {
 		
 			@Override
-			public void Action(Context context, String[] dataSetOne, String[] dataSetTwo) {
+			public void Action(Context context, Server server2, String[] dataSetOne, String[] dataSetTwo) {
 				server.logConnectionDetails(dataSetOne);
 				remove(loginState.getTextField());
 				remove(loginState.getButton());
@@ -81,10 +81,10 @@ public class MainFrame extends JFrame{
 			}
 		});
 	}
-	// Menu State
+	
 	public void MenuState(){
 		// Switch to Menu State
-		menuState.Action(context, server.schemaNames, null);
+		menuState.Action(context, null, server.schemaNames, null);
 		add(menuState.getButton(), BorderLayout.CENTER);
 		repaint();
 		validate();
@@ -92,7 +92,7 @@ public class MainFrame extends JFrame{
 		menuState.setGUIState(new GUIState() {
 			
 			@Override
-			public void Action(Context context, String[] dataSetOne, String[] dataSetTwo) {
+			public void Action(Context context, Server server2, String[] dataSetOne, String[] dataSetTwo) {
 				if(context.getState().toString().equalsIgnoreCase("Menu State")){
 				if(loginState != null){
 					server.getSchema = dataSetOne[0];
@@ -107,12 +107,12 @@ public class MainFrame extends JFrame{
 			}
 		});
 	}
-	// Table State
+	
 	public void TableState(){
 		// Switch to Table State
-		//System.out.println(context.getState().toString());
-		tableSelectState.Action(context, server.tableNames, null);
+		tableSelectState.Action(context, server, server.tableNames, null);
 		add(tableSelectState.getTableList(), BorderLayout.WEST);
+		add(tableSelectState.getTableFill(), BorderLayout.CENTER);
 		repaint();
 		validate();
 		setWindowName(" | Tables Information");
@@ -120,7 +120,7 @@ public class MainFrame extends JFrame{
 		tableSelectState.setGUIState(new GUIState() {
 
 			@Override
-			public void Action(Context context, String[] dataSetOne, String[] dataSetTwo) {
+			public void Action(Context context, Server server2, String[] dataSetOne, String[] dataSetTwo) {
 				System.out.println("Main frame reconizes JList Click");
 				if(context.getState().toString().equalsIgnoreCase("Table State")){
 					if(menuState != null){
@@ -139,16 +139,15 @@ public class MainFrame extends JFrame{
 			}
 		});
 	}
-	// Add State
+
 	public void AddState(){
 		// Switch to Adding State
-		//System.out.println(context.getState().toString());
-		add_State.Action(context, server);
+		add_State.Action(context, null, null, null);
 		// Command Listener
 		add_State.setGUIState(new GUIState() {
 			
 			@Override
-			public void Action(Context context, String[] dataSetOne, String[] dataSetTwo) {
+			public void Action(Context context, Server server2, String[] dataSetOne, String[] dataSetTwo) {
 				if(context.getState().toString().equalsIgnoreCase("Add State")){
 					if(tableSelectState!= null){
 						remove(tableSelectState);

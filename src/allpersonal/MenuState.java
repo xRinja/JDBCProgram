@@ -32,7 +32,7 @@ public class MenuState extends JFrame implements GUIState, ActionListener{
 			if(clicked == selectionButton[i]) {
 				if(guiState != null){
 					setGUIState(guiState);
-					guiState.Action(context, tempString, null);
+					guiState.Action(context, null, tempString, null);
 					setGUIState(guiState);
 				}
 			}
@@ -41,7 +41,7 @@ public class MenuState extends JFrame implements GUIState, ActionListener{
 	}
 
 	@Override
-	public void Action(Context context, String[] dataSetOne, String[] dataSetTwo) {
+	public void Action(Context context, Server server, String[] dataSetOne, String[] dataSetTwo) {
 		SetupButtons(dataSetOne);
 		SetupTextFields(dataSetTwo);
 		

@@ -20,7 +20,7 @@ public class Server {
 	// Interface
 	protected EntryListener entryListener;
 	// JDBC Variables
-	protected Connection myConnection = null;
+	protected static Connection myConnection = null;
 	protected Statement myStatement = null;
 	protected CallableStatement myCallableStatement = null;
 	protected PreparedStatement myPreparedStatement = null;
@@ -63,6 +63,7 @@ public class Server {
 		Connection connection;
 		try {
 			connection = DriverManager.getConnection(mySQLURL + getIP + ":" + port + "/" + getSchema, userName, password);
+			myConnection = DriverManager.getConnection(mySQLURL + getIP + ":" + port + "/" + getSchema, userName, password);
 			DatabaseMetaData md = connection.getMetaData();
 			ResultSet rs = md.getTables(connection.getCatalog(), null, "%", new String[] {"TABLE"});
 			int x = 0;
@@ -71,6 +72,8 @@ public class Server {
 				tempString += rs.getString(3) + " ";
 			}
 			tableNames = tempString.split(" ");
+			connection.close();
+			myConnection.close();
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -111,6 +114,10 @@ public class Server {
 	
 	public void setEntryListener(EntryListener entryListener) {
 		this.entryListener = entryListener;
+	}
+	
+	public static Connection getConnection() {
+		return myConnection;
 	}
 	
 	public void logConnectionDetails(String[] jTextFields){

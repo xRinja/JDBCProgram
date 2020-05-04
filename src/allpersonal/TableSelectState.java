@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,6 +26,7 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 	private JPanel tableList;
 	private JPanel tableFill;
 	private JScrollPane jScrollPane;
+	private String selected = "";
 	private static final long serialVersionUID = 1L;
 
 	public void setGUIState(GUIState guiState) {
@@ -32,10 +34,10 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 	}
 	
 	@Override
-	public void Action(Context context, String[] dataSetOne, String[] dataSetTwo) {
-		//JTable table = new JTable();
+	public void Action(Context context, Server server, String[] dataSetOne, String[] dataSetTwo) {
 		MakeListSelect(dataSetOne);
-		
+		MakeTableArea(server);
+	 	
 		
 		// Context
 		context.setState(this);
@@ -46,8 +48,6 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 	private void MakeListSelect(String[] tables) {
 		jList = new JList<String>(tables);
 		jList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		//jList.setLayoutOrientation(JList.VERTICAL_WRAP);
-		//jList.setSize(250,250);
 		jList.setFixedCellHeight(25);
 		jList.setFixedCellWidth(75);
 		jList.setVisibleRowCount(100);
@@ -72,8 +72,18 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 		tableList.add(jScrollPane);
 	}
 	
-	private void MakeTableArea(String[] dataSetOne, String[] dataSetTwo) {
-		jTable = new JTable();
+	private void MakeTableArea(Server server) {
+	    ResultSet rs = stmt.executeQuery("select * from product_info");
+		//server.myConnection
+		String[] columns = {"ID", "Name", "Salary"};
+		String[][] data = {{"01", "Azeem", "120,000"}, {"02", "Mark", "50,000"}};
+		jTable = new JTable(data, columns);
+		tableFill = new JPanel();
+		jTable.setBounds(30,40,200,300);
+		jTable.setEnabled(false);
+		JScrollPane sp = new JScrollPane(jTable);
+		
+		tableFill.add(sp);
 	}
 
 	@Override
@@ -85,7 +95,7 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 				System.out.println("Yelp");
 				if(guiState != null){
 					setGUIState(guiState);
-					guiState.Action(this.context, null, null);
+					guiState.Action(this.context, null, null, null);
 					setGUIState(guiState);
 				}
 			}
@@ -95,6 +105,10 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 	
 	public JPanel getTableList() {
 		return tableList;
+	}
+	
+	public JPanel getTableFill() {
+		return tableFill;
 	}
 	
 	public String toString(){

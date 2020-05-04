@@ -50,6 +50,7 @@ public class LoginState extends JFrame implements GUIState, ActionListener{
 			for(int i = 0; i < textPanel.columnTextField.length; i++) {
 				textPanel.columnTextField[i].setText(loadFile.readLine());
 			}
+			loadFile.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -64,7 +65,7 @@ public class LoginState extends JFrame implements GUIState, ActionListener{
 	}
 	
 	@Override
-	public void Action(Context context, String[] dataSetOne, String[] dataSetTwo) {
+	public void Action(Context context, Server server, String[] dataSetOne, String[] dataSetTwo) {
 		SetupButtons();
 		SetupTextFields(dataSetOne, dataSetTwo);
 
@@ -97,7 +98,7 @@ public class LoginState extends JFrame implements GUIState, ActionListener{
 				}
 				
 				setGUIState(guiState);
-				guiState.Action(this.context, loginData, null);
+				guiState.Action(this.context, null, loginData, null);
 				setGUIState(guiState);
 				}
 			}

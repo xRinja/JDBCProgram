@@ -10,7 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class MenuState extends JFrame implements GUIState, ActionListener{
+public class MenuState extends JPanel implements GUIState, ActionListener{
 
 	private JButton[] selectionButton;
 	private EntryListener entryListener;

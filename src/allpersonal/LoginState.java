@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class LoginState extends JFrame implements GUIState, ActionListener{
+public class LoginState extends JPanel implements GUIState, ActionListener{
 
 	// Private Variables
 	private JButton loginButton;

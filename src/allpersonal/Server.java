@@ -20,7 +20,7 @@ public class Server {
 	// Interface
 	protected EntryListener entryListener;
 	// JDBC Variables
-	protected static Connection myConnection = null;
+	protected Connection myConnection = null;
 	protected Statement myStatement = null;
 	protected CallableStatement myCallableStatement = null;
 	protected PreparedStatement myPreparedStatement = null;
@@ -73,7 +73,7 @@ public class Server {
 			}
 			tableNames = tempString.split(" ");
 			connection.close();
-			myConnection.close();
+			//myConnection.close();
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -116,7 +116,7 @@ public class Server {
 		this.entryListener = entryListener;
 	}
 	
-	public static Connection getConnection() {
+	public Connection getConnection() {
 		return myConnection;
 	}
 	

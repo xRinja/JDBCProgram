@@ -113,6 +113,9 @@ public class MainFrame extends JFrame{
 		tableSelectState.Action(context, server, server.tableNames, null);
 		add(tableSelectState.getTableList(), BorderLayout.WEST);
 		add(tableSelectState.getTableFill(), BorderLayout.CENTER);
+		add(tableSelectState.getActionSearch(), BorderLayout.NORTH);
+		add(tableSelectState.getDataBaseButton(), BorderLayout.SOUTH);
+		//pack();
 		repaint();
 		validate();
 		setWindowName(" | Tables Information");
@@ -121,10 +124,15 @@ public class MainFrame extends JFrame{
 
 			@Override
 			public void Action(Context context, Server server2, String[] dataSetOne, String[] dataSetTwo) {
-				System.out.println("Main frame reconizes JList Click");
 				if(context.getState().toString().equalsIgnoreCase("Table State")){
-					if(menuState != null){
-						remove(tableSelectState.getTableList());
+					//remove(tableSelectState.getTableFill());
+					//repaint();
+					//validate();
+					//add(tableSelectState.getTableFill(), BorderLayout.SOUTH);
+					//pack();
+					//repaint();
+					//validate();
+						//add(tableSelectState.getTableFill(), BorderLayout.CENTER);
 						/*server.setMetaData();
 						textPanel = new TextPanel(server.columnsNames, server.databaseTypes);
 						AddState();
@@ -132,8 +140,7 @@ public class MainFrame extends JFrame{
 						add(textPanel, BorderLayout.CENTER);
 						repaint();
 						validate();*/
-						System.out.println("Main frame reconizes JList Click");
-					}
+						System.out.println("Main frame reconizes JList Click in action");
 				}
 				
 			}

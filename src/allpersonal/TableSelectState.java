@@ -29,7 +29,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-import org.apache.commons.dbutils.DbUtils;
 
 import com.mysql.cj.jdbc.result.ResultSetMetaData;
 
@@ -249,7 +248,8 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 			} 
 			else if(clicked.getActionCommand() == "Add Entry") {
 				String[] buttonChoice = {"Add Entry"};
-				guiState.Action(this.context, null, buttonChoice, null);
+				String[] table = {tableSelection};
+				guiState.Action(this.context, null, buttonChoice, table);
 			}
 		
 		

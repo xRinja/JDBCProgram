@@ -18,25 +18,24 @@ public class GettingMetaData extends Server{
 			entryListener.debug("Connecting to database...");
 			setEntryListener(entryListener);
 			}
-			
+			String tempString = "";
 			// Collecting and listing SCHEMA names
-			myConnection = DriverManager.getConnection(getMYSQLURL() + "192.168.0.121:" + "8457/" + "videogamecollection", "root", "finger00");
+			/*myConnection = DriverManager.getConnection(getMYSQLURL() + "192.168.0.121:" + "8457/" + "videogamecollection", "root", "finger00");
 			myStatement = myConnection.createStatement();
 			dbmd = myConnection.getMetaData();
 			rs = dbmd.getCatalogs();
-			String tempString = "";
 			while(rs.next()){
 				tempString += rs.getString("TABLE_CAT") + " ";
 			}
 			schemaNames = tempString.split(" ");
 			for(int j = 0; j < schemaNames.length; j++){
 				System.out.println(schemaNames[j]);
-			}
-			// Collecting and listing Table names
-			myConnection = DriverManager.getConnection(getMYSQLURL() + "192.168.0.121:" + "8457/" + "videogamecollection", "root", "finger00");
+			}*/
+			/*// Collecting and listing Table names
+			myConnection = DriverManager.getConnection(getMYSQLURL() + ip +":" + port + "/" + schema, userName, password);
 			myStatement = myConnection.createStatement();
 			dbmd = myConnection.getMetaData();
-			rs = dbmd.getTables("videogamecollection", null, null, null);
+			rs = dbmd.getTables("schema", null, null, null);
 			rsmd = rs.getMetaData();
 			tableNames = new String[rsmd.getColumnCount()];
 			tempString ="";
@@ -49,13 +48,16 @@ public class GettingMetaData extends Server{
 				tempString += rs.getString("Table_NAME") + " "; 
 				//System.out.println(tableNames[i]);
 			}
-			tableNames = tempString.split(" ");
+			tableNames = tempString.split(" ");*/
 			// Collecting and listing Column NAMES
+			myConnection = DriverManager.getConnection(getMYSQLURL() + ip +":" + port + "/" + schema, userName, password);
+			myStatement = myConnection.createStatement();
+			dbmd = myConnection.getMetaData();
 			rs = myStatement.executeQuery("SELECT * from " + table);
 			rsmd = rs.getMetaData();
 			columnsNames = new String[rsmd.getColumnCount()];
 			System.out.println(rsmd.getColumnCount());
-			rs = dbmd.getColumns(null, "videogamecollection", "PS4", null);
+			rs = dbmd.getColumns(null, schema, table, null);
 			int i =0;
 			while(rs.next()){
 				columnsNames[i] = rs.getString("COLUMN_NAME");

@@ -95,6 +95,16 @@ public class Server {
 
 	}
 	
+	public void setTableDate(String table) {
+		this.table = table;
+		gettingMetaData = new GettingMetaData(mySQLURL, getIP, port, getSchema, userName, password, table);
+		
+		// Updating server
+		this.tableNames = gettingMetaData.tableNames;
+		this.columnsNames = gettingMetaData.columnsNames;
+		this.metaDataHash = gettingMetaData.metaDataHash;
+	}
+	
 	public String[] getColumnNames(){
 		return this.columnsNames;
 	}
@@ -109,7 +119,7 @@ public class Server {
 		addingEntries.myStatement = this.myStatement;
 		addingEntries.dbmd = this.dbmd;
 		System.out.println("Server pushed values to adding entry");
-		addingEntries.AddingEntries(jTextFields);
+		addingEntries.AddingEntries(jTextFields, table);
 	}
 	
 	public void setEntryListener(EntryListener entryListener) {

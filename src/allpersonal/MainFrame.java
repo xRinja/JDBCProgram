@@ -133,6 +133,11 @@ public class MainFrame extends JFrame{
 						MenuState();
 					}
 					else if(dataSetOne[0].equalsIgnoreCase("Add Entry")) {
+						server.setTableDate(dataSetTwo[0]);
+						remove(tableSelectState.getTableList());
+						remove(tableSelectState.getTableFill());
+						remove(tableSelectState.getActionSearch());
+						remove(tableSelectState.getDataBaseButton());
 						AddState();
 					}
 				}
@@ -143,8 +148,14 @@ public class MainFrame extends JFrame{
 
 	public void AddState(){
 		// Switch to Adding State
-		add_State.Action(context, null, null, null);
+		add_State.Action(context, null, server.columnsNames, null);
 		add(add_State.getFuncButtons(), BorderLayout.SOUTH);
+		add(add_State.getTextField(), BorderLayout.CENTER);
+		repaint();
+		validate();
+		for(int i = 0; i < server.getColumnNames().length; i++) {
+			System.out.println(server.getColumnNames()[i]);
+		}
 		
 		// Command Listener
 		add_State.setGUIState(new GUIState() {
@@ -153,14 +164,15 @@ public class MainFrame extends JFrame{
 			public void Action(Context context, Server server2, String[] dataSetOne, String[] dataSetTwo) {
 				if(context.getState().toString().equalsIgnoreCase("Add State")){
 					if(tableSelectState!= null){
-						//remove(tableSelectState);
-						server.AddingEntries(textPanel.columnTextField);
+						server.AddingEntries(add_State.columnTextField);
+						
 						System.out.println("Record Saved.");
 					}
 				}
 			}
 		});
 	}
+	
 	// Search State
 	public void SearchState(){
 		

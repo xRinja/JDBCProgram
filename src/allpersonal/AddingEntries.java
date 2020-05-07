@@ -15,10 +15,10 @@ public class AddingEntries extends Server{
 		System.out.println("Reached adding entries");
 	}
 	
-	public void AddingEntries(JTextField[] columnTextField){
+	public void AddingEntries(JTextField[] columnTextField, String table){
 		try {
 			System.out.println("Adding Entry");
-			AddDatatoDataBase(getValuesFromTextField(columnTextField));
+			AddDatatoDataBase(getValuesFromTextField(columnTextField), table);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -51,10 +51,10 @@ public class AddingEntries extends Server{
 		return values;
 	}
 		
-		private void AddDatatoDataBase(String textFieldValues) throws SQLException, ParseException{
+		private void AddDatatoDataBase(String textFieldValues, String table) throws SQLException, ParseException{
 			// Setting auto commit to false
 			myConnection.setAutoCommit(false);
-		
+			this.table = table;
 			// Getting column names from table
 			String columnNames = "";
 			String valuesIndex ="";
@@ -74,8 +74,7 @@ public class AddingEntries extends Server{
 				System.out.println("Temp Array is: " + tempArray[i1]);
 			}
 			valuesIndex += "?";
-			
-			String sql = "INSERT INTO PS4(" + columnNames + ") " + "VALUES(" + valuesIndex + ")";
+			String sql = "INSERT INTO " + table + "(" + columnNames + ") " + "VALUES(" + valuesIndex + ")";
 			System.out.println(sql);
 			myPreparedStatement = myConnection.prepareStatement(sql);
 			for(int i2 = 0; i2 < tempArray.length; i2++){

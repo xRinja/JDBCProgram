@@ -64,7 +64,7 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 		tableSelection = dataSetTwo[0];
 		System.out.println("DataSetTwo is: " + dataSetTwo[0]);
 		}
-		tableSelection = dataSetOne[1];
+		tableSelection = dataSetOne[0];
 		System.out.println("DataSetTwo is: ");
 		MakeActionArea();
 		MakeListSelect(dataSetOne, server);
@@ -130,43 +130,24 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 			HashMap<String, String> metaDataHash = new HashMap<>(); // Column Type.
 			ResultSet rs = ps.executeQuery();
 			System.out.println("Result set is from: " + tableSelection);
+			
 			tableModel = new DefaultTableModel();
 			tableModel = buildTableModel(rs);
 			jTable = new JTable(tableModel);
-			//tableModel.fireTableStructureChanged();
-			//tableModel.fireTableDataChanged();
 			BorderLayout borderLayout = new BorderLayout();
 			setLayout(borderLayout);
 			tableModel.fireTableChanged(null);
 			jTable.getTableHeader().setReorderingAllowed(false);
-			//jTable.setModel(tableModel);
 			jTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-			jTable.setPreferredScrollableViewportSize(new Dimension(1000,800));
-			//jTable.setPreferredScrollableViewportSize(jTable.getPreferredSize());
 			jTable.setFillsViewportHeight(true);
-			//jTable.setLayout(borderLayout);
 			jTable.setEnabled(false);
-			//jTable.setRowHeight(30);
-			/*rsmd = rs.getMetaData();
-			columns = new String[rsmd.getColumnCount()];
-			System.out.println(rsmd.getColumnCount());
-			rs = dbmd.getColumns(null, server.getSchema, tableSelection, null);
-			int i =0;
-			while(rs.next()){
-				columns[i] = rs.getString("COLUMN_NAME");
-				metaDataHash.put(rs.getString("COLUMN_NAME"), rs.getString("TYPE_NAME"));
-				i++;
-			}*/
+			
 			sp = new JScrollPane(jTable);
-			//sp.repaint();
-			//sp.revalidate();
-			//tableFill = new JPanel();
-			//tableFill.setLayout(BorderLayout.CENTER);
+
 			tableFill.setLayout(new BorderLayout(0,0));
 			tableFill.add(sp, borderLayout.CENTER);
 			tableFill.repaint();
 			tableFill.revalidate();
-			//tableFill.repaint();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -216,6 +197,7 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 		txtSearchBar.setColumns(10);
 		
 		JButton btnAddEntry = new JButton("Add Entry");
+		btnAddEntry.addActionListener(this);
 		GridBagConstraints gbc_btnAddEntry = new GridBagConstraints();
 		gbc_btnAddEntry.insets = new Insets(0, 0, 0, 5);
 		gbc_btnAddEntry.gridx = 0;
@@ -262,12 +244,12 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 		System.out.println("DatabaseButtonPressed Outside");
 		System.out.println(clicked.getActionCommand());
 			if(clicked.getActionCommand() == "Database") {
-				System.out.println("Yelp");
-				if(guiState != null){
-					//setGUIState(guiState);
-					//guiState.Action(this.context, null, null, null);
-					//setGUIState(guiState);
-				}
+				String[] buttonChoice = {"Database"};
+				guiState.Action(this.context, null, buttonChoice, null);
+			} 
+			else if(clicked.getActionCommand() == "Add Entry") {
+				String[] buttonChoice = {"Add Entry"};
+				guiState.Action(this.context, null, buttonChoice, null);
 			}
 		
 		

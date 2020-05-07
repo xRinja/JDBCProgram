@@ -125,22 +125,16 @@ public class MainFrame extends JFrame{
 			@Override
 			public void Action(Context context, Server server2, String[] dataSetOne, String[] dataSetTwo) {
 				if(context.getState().toString().equalsIgnoreCase("Table State")){
-					//remove(tableSelectState.getTableFill());
-					//repaint();
-					//validate();
-					//add(tableSelectState.getTableFill(), BorderLayout.SOUTH);
-					//pack();
-					//repaint();
-					//validate();
-						//add(tableSelectState.getTableFill(), BorderLayout.CENTER);
-						/*server.setMetaData();
-						textPanel = new TextPanel(server.columnsNames, server.databaseTypes);
+					if(dataSetOne[0].equalsIgnoreCase("Database")) {
+						remove(tableSelectState.getTableList());
+						remove(tableSelectState.getTableFill());
+						remove(tableSelectState.getActionSearch());
+						remove(tableSelectState.getDataBaseButton());
+						MenuState();
+					}
+					else if(dataSetOne[0].equalsIgnoreCase("Add Entry")) {
 						AddState();
-						add(add_State, BorderLayout.SOUTH);
-						add(textPanel, BorderLayout.CENTER);
-						repaint();
-						validate();*/
-						System.out.println("Main frame reconizes JList Click in action");
+					}
 				}
 				
 			}
@@ -150,6 +144,8 @@ public class MainFrame extends JFrame{
 	public void AddState(){
 		// Switch to Adding State
 		add_State.Action(context, null, null, null);
+		add(add_State.getFuncButtons(), BorderLayout.SOUTH);
+		
 		// Command Listener
 		add_State.setGUIState(new GUIState() {
 			
@@ -157,7 +153,7 @@ public class MainFrame extends JFrame{
 			public void Action(Context context, Server server2, String[] dataSetOne, String[] dataSetTwo) {
 				if(context.getState().toString().equalsIgnoreCase("Add State")){
 					if(tableSelectState!= null){
-						remove(tableSelectState);
+						//remove(tableSelectState);
 						server.AddingEntries(textPanel.columnTextField);
 						System.out.println("Record Saved.");
 					}

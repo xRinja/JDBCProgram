@@ -5,12 +5,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class addState extends JPanel implements GUIState, ActionListener{
 
 	private JButton saveButton;
 	private JButton cancleButton;
+	private JPanel funcButtons;
+	private JFrame newFrame;
 	private GUIState guiState;
 	private Context context;
 	
@@ -27,8 +30,10 @@ public class addState extends JPanel implements GUIState, ActionListener{
 		setLayout(flow); // Sets layout of panel.
 		cancleButton.addActionListener(this); // Adds action listener to button.
 		saveButton.addActionListener(this); // Adds action listener to button.
-		add(cancleButton);
-		add(saveButton);
+		funcButtons = new JPanel();
+		funcButtons.setLayout(flow);
+		funcButtons.add(cancleButton);
+		funcButtons.add(saveButton);
 		System.out.println("Add button");
 		validate();
 		context.setState(this);
@@ -54,6 +59,10 @@ public class addState extends JPanel implements GUIState, ActionListener{
 			}
 		} 
 		
+	}
+	
+	public JPanel getFuncButtons() {
+		return funcButtons;
 	}
 	
 	public String toString(){

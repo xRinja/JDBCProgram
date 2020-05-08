@@ -1,6 +1,8 @@
 package allpersonal;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -23,6 +25,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+
 import java.sql.*;
 
 
@@ -50,6 +54,7 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 	private String sqlQueries = "";
 	private JScrollPane sp;
 	private Connection connection;
+	private Component comp;
 	private static final long serialVersionUID = 1L;
 
 	public void setGUIState(GUIState guiState) {
@@ -62,9 +67,9 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 	
 	@Override
 	public void Action(Context context, Server server, String[] dataSetOne, String[] dataSetTwo) {
-		if(dataSetTwo != null) {
-		tableSelection = dataSetTwo[0];
-		System.out.println("DataSetTwo is: " + dataSetTwo[0]);
+		if(tableSelection != null) {
+		} else {
+			tableSelection = dataSetOne[0];
 		}
 		if(tableFill != null) {
 			//tableModel.fireTableChanged(null);
@@ -72,7 +77,7 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 			
 		}
 		//if(tableSelection != null) {
-		tableSelection = dataSetOne[0];
+		//tableSelection = dataSetOne[0];
 		//}
 		
 		System.out.println("DataSetTwo is: ");
@@ -143,7 +148,19 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 			tableModel = new DefaultTableModel();
 			tableModel = buildTableModel(rs);
 			//tableModel.addRow(new Object[]{Boolean.FALSE,null,null,null});
-			jTable = new JTable(tableModel);
+			jTable = new JTable(tableModel) {
+				@Override
+				public java.awt.Component prepareRenderer(TableCellRenderer renderer, int row, int col) {
+			        comp = super.prepareRenderer(renderer, row, col);
+			        Object value = getModel().getValueAt(row, 1);
+			       /* if (value.equals("The Last Of Us")) {
+			            comp.setBackground(Color.lightGray);
+			        }  else {
+			           //comp.setBackground(Color.white);
+			        }*/
+			        return comp;
+			    }
+			};
 			BorderLayout borderLayout = new BorderLayout();
 			setLayout(borderLayout);
 			tableModel.fireTableChanged(null);
@@ -263,14 +280,55 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 		database = panel_2;
 	}
 	
-	private void DeleteEntry() {
+	private void DeleteEntry(){
 		System.out.println("Delete Entry Started");
+		for(int i = 0; i < jTable.getRowCount(); i++) {
+			if(jTable.isRowSelected(i) == true) {
+				//Delete Selected Row        
+				int[] getSelectedRowForDeletion = jTable.getSelectedRows();
+				//Check if their is a row selected
+				for(int k = getSelectedRowForDeletion.length - 1; k >= 0; k--) {
+					try {
+						if (getSelectedRowForDeletion[k] >= 0) {
+							System.out.println("Selected rows are: " +  getSelectedRowForDeletion[k]);
+						Statement statement = connection.createStatement();
+						sqlQueries = "DELETE FROM " + tableSelection + " WHERE " + jTable.getColumnName(0) + "='" + 
+						jTable.getValueAt(getSelectedRowForDeletion[k], 0) +"'";
+						//tableModel.fireTableChanged(null);
+						System.out.println(sqlQueries);
+						statement.executeUpdate(sqlQueries);
+						btnConfirm.setEnabled(true);
+						/*Object value = jTable.getModel().getValueAt(getSelectedRowForDeletion[k], 0);
+					     if (value.equals(jTable.getModel().getValueAt(getSelectedRowForDeletion[k], 0))) {
+					    	 comp.setBackground(Color.lightGray);
+					     }*/
+						}
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					if (getSelectedRowForDeletion[k] >= 0) {
+
+						//jTable.getSelectedRow()
+						tableModel.removeRow(getSelectedRowForDeletion[k]);
+						getSelectedRowForDeletion = jTable.getSelectedRows();
+						System.out.println("Row Deleted");
+					} else {
+						System.out.println("Unable To Delete");
+					}
+					//comp.setBackground(Color.lightGray);
+				}
+			}
+		}
+		//tableModel.removeRow(getSelectedRowForDeletion[k]);
 	}
 	
 	private void ConfirmChanges(){
 		try {
 			connection.commit();
 			btnConfirm.setEnabled(false);
+			connection.setAutoCommit(false);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -414,7 +472,9 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 			      break;
 			    case TableModelEvent.DELETE:
 			      for (int i = firstRow; i <= lastRow; i++) {
-			        System.out.println(i);
+			          int getSelectedRowForDeletion = table.getSelectedRow();
+			          //tableModel.removeRow(getSelectedRowForDeletion);
+			          System.out.println("Deleted From Case");
 			      }
 			      break;
 			    }

@@ -2,6 +2,7 @@ package allpersonal;
 
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
 
 public class MainFrame extends JFrame{
 	
@@ -34,12 +35,17 @@ public class MainFrame extends JFrame{
 		tableSelectState = new TableSelectState(); // Initialize TableSelectState
 		add_State = new addState(); // Initialize AddState
 		
+		try { 
+		    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
 		// First State
 		LoginState();
 
 		// Constructing GUI elements.
 				//setSize(1200,800);
-				setVisible(true);		
+				setVisible(true);	
 	}
 	
 	public void LoginState(){

@@ -20,7 +20,7 @@ public class Server {
 	// Interface
 	protected EntryListener entryListener;
 	// JDBC Variables
-	protected Connection myConnection = null;
+	protected static Connection myConnection = null;
 	protected Statement myStatement = null;
 	protected CallableStatement myCallableStatement = null;
 	protected PreparedStatement myPreparedStatement = null;
@@ -58,15 +58,14 @@ public class Server {
 		return mySQLURL;
 	}
 	
-	public void setMetaData(){
-		//gettingMetaData = new GettingMetaData(mySQLURL, getIP, port, getSchema, userName, password, table);
+	public void setMetaData(String schemaName){
+		this.getSchema = schemaName;
 		Connection connection;
 		try {
 			connection = DriverManager.getConnection(mySQLURL + getIP + ":" + port + "/" + getSchema, userName, password);
 			myConnection = DriverManager.getConnection(mySQLURL + getIP + ":" + port + "/" + getSchema, userName, password);
 			DatabaseMetaData md = connection.getMetaData();
 			ResultSet rs = md.getTables(connection.getCatalog(), null, "%", new String[] {"TABLE"});
-			int x = 0;
 			String tempString = "";
 			while(rs.next()) {
 				tempString += rs.getString(3) + " ";
@@ -78,21 +77,6 @@ public class Server {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		/*
-		this.rsmd = gettingMetaData.rsmd;
-		this.dbmd = gettingMetaData.dbmd;
-		this.myConnection = gettingMetaData.myConnection;
-		this.myStatement = gettingMetaData.myStatement;
-		this.myPreparedStatement = gettingMetaData.myPreparedStatement;
-		this.columnsNames = gettingMetaData.columnsNames;
-		this.metaDataHash = gettingMetaData.metaDataHash;
-		this.rs = gettingMetaData.rs;
-		this.schemaNames = gettingMetaData.schemaNames;
-		this.tableNames = gettingMetaData.tableNames;*/
-		
-		//schemaNames = new String[];
-		//this.schemaNames = gettingMetaData.dbmd.getSchemas().;
-
 	}
 	
 	public void setTableDate(String table) {
@@ -100,13 +84,17 @@ public class Server {
 		gettingMetaData = new GettingMetaData(mySQLURL, getIP, port, getSchema, userName, password, table);
 		
 		// Updating server
-		this.tableNames = gettingMetaData.tableNames;
+		//this.tableNames = gettingMetaData.tableNames;
 		this.columnsNames = gettingMetaData.columnsNames;
 		this.metaDataHash = gettingMetaData.metaDataHash;
 	}
 	
 	public String[] getColumnNames(){
 		return this.columnsNames;
+	}
+	
+	public String getCurrentTable() {
+		return table;
 	}
 	
 	public void AddingEntries(JTextField[] jTextFields){
@@ -126,7 +114,7 @@ public class Server {
 		this.entryListener = entryListener;
 	}
 	
-	public Connection getConnection() {
+	public static Connection getConnection() {
 		return myConnection;
 	}
 	
@@ -140,7 +128,6 @@ public class Server {
 				System.out.println("Connection Succeeded");
 				DatabaseMetaData meta = connection.getMetaData();
 				ResultSet schemas = meta.getCatalogs();
-				//System.out.println(schemas.getString("TABLE_CAT"));
 				String tempString = "";
 				while(schemas.next()) {
 					tempString += schemas.getString("TABLE_CAT") + " ";
@@ -150,7 +137,6 @@ public class Server {
 				this.mySQLURL = jTextFields[0];
 				this.getIP = jTextFields[1];
 				this.port = jTextFields[2];
-				//this.getSchema = jTextFields[3];
 				this.userName = jTextFields[3];
 				this.password = jTextFields[4];
 				this.schemaNames = tempString.split(" ");

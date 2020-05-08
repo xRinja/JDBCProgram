@@ -7,19 +7,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class addState extends JPanel implements GUIState, ActionListener{
 
+	private static final long serialVersionUID = 1L;
 	private JButton saveButton;
 	private JButton cancleButton;
 	private JPanel funcButtons;
 	private JPanel textField;
-	private JFrame newFrame;
 	JLabel columnName;
 	JTextField [] columnTextField;
 	private GUIState guiState;
@@ -53,17 +51,19 @@ public class addState extends JPanel implements GUIState, ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JButton clicked = (JButton)e.getSource();
-		
+		String[] buttonPressed = new String[1];
+		buttonPressed[0] = clicked.getActionCommand();
 		if(clicked == saveButton) {
 			if(guiState != null){
 				setGUIState(guiState);
-				guiState.Action(this.context, null, null, null);;
+				guiState.Action(this.context, null, buttonPressed, null);
 				setGUIState(guiState);
 			}
 		} 
 		if(clicked == cancleButton) {
 			if(guiState != null){
 				setGUIState(guiState);
+				guiState.Action(this.context, null, buttonPressed, null);
 			}
 		} 
 		

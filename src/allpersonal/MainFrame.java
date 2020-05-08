@@ -1,36 +1,17 @@
 package allpersonal;
 
 import java.awt.BorderLayout;
-import java.awt.TextArea;
-import java.awt.TextField;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.SQLException;
-import java.text.ParseException;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SpringLayout;
 
 public class MainFrame extends JFrame{
 	
 	// Variables
-	private Toolbar toolbar;
-	private TextPanel textPanel;
 	private Server server;
-	private String statement;
 	private LoginState loginState;
 	private MenuState menuState;
 	private TableSelectState tableSelectState;
 	private addState add_State;
 	private Context context;
-	private GUIState currentGUIState;
 	
 	public void setWindowName(String window) {
 		this.setTitle("Sys Database Managment" + window);
@@ -52,13 +33,12 @@ public class MainFrame extends JFrame{
 		menuState = new MenuState(); // Initialize MenuState
 		tableSelectState = new TableSelectState(); // Initialize TableSelectState
 		add_State = new addState(); // Initialize AddState
-		textPanel = new TextPanel(server.connection, server.databaseTypes); // Class to add entries.
 		
 		// First State
 		LoginState();
 
 		// Constructing GUI elements.
-				setSize(1200,800);
+				//setSize(1200,800);
 				setVisible(true);		
 	}
 	
@@ -68,6 +48,7 @@ public class MainFrame extends JFrame{
 		loginState.Action(context, null, server.connection, server.databaseTypes);
 		add(loginState.getTextField(), BorderLayout.CENTER); 
 		add(loginState.getButton(), BorderLayout.SOUTH);
+		pack();
 		repaint();
 		validate();
 		loginState.setGUIState(new GUIState() {
@@ -86,6 +67,7 @@ public class MainFrame extends JFrame{
 		// Switch to Menu State
 		menuState.Action(context, null, server.schemaNames, null);
 		add(menuState.getButton(), BorderLayout.CENTER);
+		pack();
 		repaint();
 		validate();
 		setWindowName(" | Databases");
@@ -95,8 +77,7 @@ public class MainFrame extends JFrame{
 			public void Action(Context context, Server server2, String[] dataSetOne, String[] dataSetTwo) {
 				if(context.getState().toString().equalsIgnoreCase("Menu State")){
 				if(loginState != null){
-					server.getSchema = dataSetOne[0];
-					server.setMetaData();
+					server.setMetaData(dataSetOne[0]);
 					remove(menuState.getButton());
 					TableState();
 					}
@@ -115,7 +96,7 @@ public class MainFrame extends JFrame{
 		add(tableSelectState.getTableFill(), BorderLayout.CENTER);
 		add(tableSelectState.getActionSearch(), BorderLayout.NORTH);
 		add(tableSelectState.getDataBaseButton(), BorderLayout.SOUTH);
-		//pack();
+		pack();
 		repaint();
 		validate();
 		setWindowName(" | Tables Information");
@@ -151,8 +132,10 @@ public class MainFrame extends JFrame{
 		add_State.Action(context, null, server.columnsNames, null);
 		add(add_State.getFuncButtons(), BorderLayout.SOUTH);
 		add(add_State.getTextField(), BorderLayout.CENTER);
+		pack();
 		repaint();
 		validate();
+		setWindowName(" | Add Entry: " + server.table);
 		for(int i = 0; i < server.getColumnNames().length; i++) {
 			System.out.println(server.getColumnNames()[i]);
 		}
@@ -164,9 +147,21 @@ public class MainFrame extends JFrame{
 			public void Action(Context context, Server server2, String[] dataSetOne, String[] dataSetTwo) {
 				if(context.getState().toString().equalsIgnoreCase("Add State")){
 					if(tableSelectState!= null){
-						server.AddingEntries(add_State.columnTextField);
-						
-						System.out.println("Record Saved.");
+						if(dataSetOne[0].equalsIgnoreCase("Cancle")) {
+							remove(add_State.getFuncButtons());
+							remove(add_State.getTextField());
+							TableState(); 
+						}
+						else if(dataSetOne[0].equalsIgnoreCase("Save")) {
+							server.AddingEntries(add_State.columnTextField);
+							System.out.println("Record Saved.");
+							remove(add_State.getFuncButtons());
+							remove(add_State.getTextField());
+							TableState(); 
+						}
+						else if(dataSetOne[0].equalsIgnoreCase("Confirm")) {
+							
+						}
 					}
 				}
 			}

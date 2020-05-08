@@ -13,43 +13,7 @@ public class GettingMetaData extends Server{
 	// Setter for ResultSetMetaData
 	private void setresultSetMetaData(String url, String ip, String port, String schema, String userName, String password, String table){
 		try{
-			// Debug message
-			if(entryListener != null){
-			entryListener.debug("Connecting to database...");
-			setEntryListener(entryListener);
-			}
 			String tempString = "";
-			// Collecting and listing SCHEMA names
-			/*myConnection = DriverManager.getConnection(getMYSQLURL() + "192.168.0.121:" + "8457/" + "videogamecollection", "root", "finger00");
-			myStatement = myConnection.createStatement();
-			dbmd = myConnection.getMetaData();
-			rs = dbmd.getCatalogs();
-			while(rs.next()){
-				tempString += rs.getString("TABLE_CAT") + " ";
-			}
-			schemaNames = tempString.split(" ");
-			for(int j = 0; j < schemaNames.length; j++){
-				System.out.println(schemaNames[j]);
-			}*/
-			/*// Collecting and listing Table names
-			myConnection = DriverManager.getConnection(getMYSQLURL() + ip +":" + port + "/" + schema, userName, password);
-			myStatement = myConnection.createStatement();
-			dbmd = myConnection.getMetaData();
-			rs = dbmd.getTables("schema", null, null, null);
-			rsmd = rs.getMetaData();
-			tableNames = new String[rsmd.getColumnCount()];
-			tempString ="";
-			while(rs.next()){
-				//System.out.println("Table name: "+rs.getString("Table_NAME"));
-		         //System.out.println("Table type: "+rs.getString("TABLE_TYPE"));
-		         //System.out.println("Table schema: "+rs.getString("TABLE_SCHEM"));
-		         //System.out.println("Table catalog: "+rs.getString("TABLE_CAT"));
-		         //System.out.println(" ");
-				tempString += rs.getString("Table_NAME") + " "; 
-				//System.out.println(tableNames[i]);
-			}
-			tableNames = tempString.split(" ");*/
-			// Collecting and listing Column NAMES
 			myConnection = DriverManager.getConnection(getMYSQLURL() + ip +":" + port + "/" + schema, userName, password);
 			myStatement = myConnection.createStatement();
 			dbmd = myConnection.getMetaData();

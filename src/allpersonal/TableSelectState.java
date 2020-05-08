@@ -1,17 +1,11 @@
 package allpersonal;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -24,17 +18,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import java.sql.*;
 
-
-import com.mysql.cj.jdbc.result.ResultSetMetaData;
 
 public class TableSelectState extends JFrame implements GUIState, ActionListener{
 
-	private JButton[] selectionButton;
 	private GUIState guiState;
 	private Context context;
 	private JList<String> jList;
@@ -44,17 +37,27 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 	private JPanel tableFill = new JPanel();
 	private JPanel actionSearch;
 	private JPanel database;
+	private JButton btnDatabase;
+	private JButton btnAddEntry;
+	private JButton btnSearch;
+	private JButton btnDeleteEntry;
+	private JButton btnConfirm;
 	private JTextField txtSearchBar;
 	private JScrollPane jScrollPane;
+	private String[][] currentColumnEntry;
 	//private String selected = "";
 	private String tableSelection;
-	private String[] columns;
-	private String[][] data;
+	private String sqlQueries = "";
 	private JScrollPane sp;
+	private Connection connection;
 	private static final long serialVersionUID = 1L;
 
 	public void setGUIState(GUIState guiState) {
 		this.guiState = guiState;
+	}
+	
+	public TableSelectState() {
+		connection = Server.getConnection();
 	}
 	
 	@Override
@@ -63,7 +66,15 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 		tableSelection = dataSetTwo[0];
 		System.out.println("DataSetTwo is: " + dataSetTwo[0]);
 		}
+		if(tableFill != null) {
+			//tableModel.fireTableChanged(null);
+			tableFill.removeAll();
+			
+		}
+		//if(tableSelection != null) {
 		tableSelection = dataSetOne[0];
+		//}
+		
 		System.out.println("DataSetTwo is: ");
 		MakeActionArea();
 		MakeListSelect(dataSetOne, server);
@@ -84,7 +95,6 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 		jList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		jList.setFixedCellHeight(25);
 		jList.setFixedCellWidth(100);
-		//jList.setVisibleRowCount(100);
 		jList.addListSelectionListener(new ListSelectionListener() {
 
 			@Override
@@ -121,17 +131,18 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 	private void MakeTableArea(Server server) {
 		//server.myConnection
 		try {
-			Statement statement = null;
+			connection = Server.getConnection();
+			connection.setAutoCommit(false);
 			PreparedStatement ps = null;
-			java.sql.ResultSetMetaData rsmd = null;
-			DatabaseMetaData dbmd = server.getConnection().getMetaData();
-			ps = server.getConnection().prepareStatement("select * from " + tableSelection);
-			HashMap<String, String> metaDataHash = new HashMap<>(); // Column Type.
+			//connection = Server.getConnection();
+			connection.getMetaData();
+			ps = connection.prepareStatement("select * from " + tableSelection);
+			new HashMap<>();
 			ResultSet rs = ps.executeQuery();
 			System.out.println("Result set is from: " + tableSelection);
-			
 			tableModel = new DefaultTableModel();
 			tableModel = buildTableModel(rs);
+			//tableModel.addRow(new Object[]{Boolean.FALSE,null,null,null});
 			jTable = new JTable(tableModel);
 			BorderLayout borderLayout = new BorderLayout();
 			setLayout(borderLayout);
@@ -139,10 +150,21 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 			jTable.getTableHeader().setReorderingAllowed(false);
 			jTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 			jTable.setFillsViewportHeight(true);
-			jTable.setEnabled(false);
+			jTable.setEnabled(true);
+			jTable.getModel().addTableModelListener(jTable);
+			//jTable.tableChanged(tableModel);
+			jTable.getModel().addTableModelListener(new MyTableModelListener(jTable, this));
+			int x = 0;
+			currentColumnEntry = new String[jTable.getRowCount()][jTable.getColumnCount()];
+			for(int i = 0; i < jTable.getRowCount(); i++) {
+				for(int n = 0; n < jTable.getColumnCount(); n++) {
+				currentColumnEntry[i][n] = jTable.getValueAt(i, n).toString();
+				System.out.println("JTable contains: " + currentColumnEntry[i][n]);
+				System.out.println(jTable.getColumnName(n));
+				}
+			}
 			
 			sp = new JScrollPane(jTable);
-
 			tableFill.setLayout(new BorderLayout(0,0));
 			tableFill.add(sp, borderLayout.CENTER);
 			tableFill.repaint();
@@ -154,8 +176,8 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 	}
 	
 	private void MakeActionArea() {
-		JButton addEntry = new JButton();
-		JButton deleteEntry = new JButton();
+		new JButton();
+		new JButton();
 		actionSearch = new JPanel();
 		
 		JPanel panel_1 = new JPanel();
@@ -167,7 +189,8 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 		gbl_panel_1.rowWeights = new double[]{0.0, 0.0};
 		panel_1.setLayout(gbl_panel_1);
 		
-		JButton btnSearch = new JButton("Search");
+		btnSearch = new JButton("Search");
+		btnSearch.addActionListener(this);
 		GridBagConstraints gbc_btnSearch = new GridBagConstraints();
 		gbc_btnSearch.fill = GridBagConstraints.BOTH;
 		gbc_btnSearch.insets = new Insets(0, 0, 5, 0);
@@ -195,7 +218,7 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 		panel_1.add(txtSearchBar, gbc_txtSearchBar);
 		txtSearchBar.setColumns(10);
 		
-		JButton btnAddEntry = new JButton("Add Entry");
+		btnAddEntry = new JButton("Add Entry");
 		btnAddEntry.addActionListener(this);
 		GridBagConstraints gbc_btnAddEntry = new GridBagConstraints();
 		gbc_btnAddEntry.insets = new Insets(0, 0, 0, 5);
@@ -203,7 +226,9 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 		gbc_btnAddEntry.gridy = 1;
 		panel_1.add(btnAddEntry, gbc_btnAddEntry);
 		
-		JButton btnConfirm = new JButton("Confirm");
+		btnConfirm = new JButton("Confirm");
+		btnConfirm.addActionListener(this);
+		btnConfirm.setEnabled(false);
 		GridBagConstraints gbc_btnConfirm = new GridBagConstraints();
 		gbc_btnConfirm.fill = GridBagConstraints.BOTH;
 		gbc_btnConfirm.insets = new Insets(0, 0, 0, 5);
@@ -211,7 +236,8 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 		gbc_btnConfirm.gridy = 1;
 		panel_1.add(btnConfirm, gbc_btnConfirm);
 		
-		JButton btnDeleteEntry = new JButton("Delete Entry");
+		btnDeleteEntry = new JButton("Delete Entry");
+		btnDeleteEntry.addActionListener(this);
 		GridBagConstraints gbc_btnDeleteEntry = new GridBagConstraints();
 		gbc_btnDeleteEntry.gridx = 2;
 		gbc_btnDeleteEntry.gridy = 1;
@@ -227,7 +253,7 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 		gbl_panel_2.rowWeights = new double[]{0.0};
 		panel_2.setLayout(gbl_panel_2);
 		
-		JButton btnDatabase = new JButton("Database");
+		btnDatabase = new JButton("Database");
 		GridBagConstraints gbc_btnDatabase = new GridBagConstraints();
 		gbc_btnDatabase.fill = GridBagConstraints.BOTH;
 		gbc_btnDatabase.gridx = 0;
@@ -235,6 +261,20 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 		btnDatabase.addActionListener(this);
 		panel_2.add(btnDatabase, gbc_btnDatabase);
 		database = panel_2;
+	}
+	
+	private void DeleteEntry() {
+		System.out.println("Delete Entry Started");
+	}
+	
+	private void ConfirmChanges(){
+		try {
+			connection.commit();
+			btnConfirm.setEnabled(false);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -246,10 +286,20 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 				String[] buttonChoice = {"Database"};
 				guiState.Action(this.context, null, buttonChoice, null);
 			} 
-			else if(clicked.getActionCommand() == "Add Entry") {
+			if(clicked.getActionCommand() == "Add Entry") {
 				String[] buttonChoice = {"Add Entry"};
 				String[] table = {tableSelection};
 				guiState.Action(this.context, null, buttonChoice, table);
+			}
+			if(clicked.getActionCommand() == "Delete Entry") {
+				String[] buttonChoice = {"Add Entry"};
+				System.out.println("Pressed Delete");
+				DeleteEntry();
+			}
+			if(clicked.getActionCommand() == "Confirm") {
+				String[] buttonChoice = {"Confirm"};
+				System.out.println("Pressed Confirm");
+				ConfirmChanges();
 			}
 		
 		
@@ -257,7 +307,6 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 	
 	private DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
 		java.sql.ResultSetMetaData metaData = rs.getMetaData();
-
 	    // names of columns
 	    Vector<String> columnNames = new Vector<String>();
 	    int columnCount = metaData.getColumnCount();
@@ -271,8 +320,8 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 	    while (rs.next()) {
 	        Vector<Object> vector = new Vector<Object>();
 	        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
-	        	System.out.println(rs.getObject(columnIndex));
 	            vector.add(rs.getObject(columnIndex));
+	            System.out.println("Column Entry is: " + vector);
 	        }
 	        data.add(vector);
 	    }
@@ -301,4 +350,74 @@ public class TableSelectState extends JFrame implements GUIState, ActionListener
 		return "Table State";
 	}
 
+	public String getSqlQueries() {
+		return sqlQueries;
+	}
+	
+	
+	class MyTableModelListener implements TableModelListener {
+		  JTable table;
+		  //TableSelectState tss;
+
+		  MyTableModelListener(JTable table, TableSelectState tss) {
+		    this.table = table;
+		    //this.tss = tss;
+		  }
+		  
+		  @Override
+		  public void tableChanged(TableModelEvent e) {
+			    int firstRow = e.getFirstRow();
+			    int lastRow = e.getLastRow();
+			    int index = e.getColumn();
+
+			    switch (e.getType()) {
+			    case TableModelEvent.INSERT:
+			      for (int i = firstRow; i <= lastRow; i++) {
+			        System.out.println("Insert at: " + i);
+			      }
+			      break;
+			    case TableModelEvent.UPDATE:
+			      if (firstRow == TableModelEvent.HEADER_ROW) {
+			        if (index == TableModelEvent.ALL_COLUMNS) {
+			          System.out.println("A column was added");
+			        } else {
+			          System.out.println(index + "in header changed");
+			        }
+			      } else {
+			        for (int i = firstRow; i <= lastRow; i++) {
+			          if (index == TableModelEvent.ALL_COLUMNS) {
+			            System.out.println("All columns have changed");
+			          } else {
+			        	  if(currentColumnEntry[firstRow][index].equalsIgnoreCase(jTable.getValueAt(firstRow, index).toString())) {
+			        		  System.out.println("Field has not been changed");
+			        	  } else {
+			        		  try {
+			        			//connection = Server.myConnection;
+								Statement statement = connection.createStatement();
+								sqlQueries = "UPDATE " + tableSelection + " SET " + table.getColumnName(index) + "='" + 
+								table.getValueAt(firstRow, index) + "' Where " + table.getColumnName(0) + "='" + table.getValueAt(firstRow, 0) +"'";
+								System.out.println(sqlQueries);
+								statement.executeUpdate(sqlQueries);
+								//tableModel.fireTableDataChanged();
+								btnConfirm.setEnabled(true);
+								//connection.close();
+							} catch (SQLException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+			        		  System.out.println(table.getValueAt(firstRow, index).toString());
+			        		  System.out.println("Change at index: " + "(" + firstRow + "," + index+")");
+			        	  }
+			          	}
+			        }
+			      }
+			      break;
+			    case TableModelEvent.DELETE:
+			      for (int i = firstRow; i <= lastRow; i++) {
+			        System.out.println(i);
+			      }
+			      break;
+			    }
+	}
+	}
 }

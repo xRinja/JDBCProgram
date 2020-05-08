@@ -99,7 +99,6 @@ public class LoginState extends JPanel implements GUIState, ActionListener{
 				
 				setGUIState(guiState);
 				guiState.Action(this.context, null, loginData, null);
-				setGUIState(guiState);
 				}
 			}
 	}

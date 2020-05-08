@@ -1,19 +1,16 @@
 package allpersonal;
 
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class MenuState extends JPanel implements GUIState, ActionListener{
 
 	private JButton[] selectionButton;
-	private EntryListener entryListener;
 	private GUIState guiState;
 	private Context context;
 	private JPanel buttonPanel;
@@ -43,7 +40,6 @@ public class MenuState extends JPanel implements GUIState, ActionListener{
 	@Override
 	public void Action(Context context, Server server, String[] dataSetOne, String[] dataSetTwo) {
 		SetupButtons(dataSetOne);
-		SetupTextFields(dataSetTwo);
 		
 		context.setState(this);
 		this.context = context;
@@ -85,10 +81,6 @@ public class MenuState extends JPanel implements GUIState, ActionListener{
 				xcounter++;
 			}
 		}
-	}
-	
-	private void SetupTextFields(String[] dataSetTwo){
-
 	}
 	
 	public JPanel getButton() {
